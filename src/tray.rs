@@ -25,12 +25,12 @@ impl Tray for AppTray {
     }
 
     fn title(&self) -> String {
-        gettext("Brilho dos Monitores")
+        gettext("Monitor Brightness")
     }
 
     fn tool_tip(&self) -> ToolTip {
         ToolTip {
-            title: gettext("Brilho dos Monitores"),
+            title: gettext("Monitor Brightness"),
             ..Default::default()
         }
     }
@@ -57,7 +57,7 @@ impl Tray for AppTray {
 
         vec![
             StandardItem {
-                label: gettext("Mostrar/Ocultar"),
+                label: gettext("Show/Hide"),
                 activate: Box::new(|tray: &mut Self| {
                     let _ = tray.sender.try_send(TrayEvent::ToggleWindow);
                 }),
@@ -66,7 +66,7 @@ impl Tray for AppTray {
             .into(),
             MenuItem::Separator,
             SubMenu {
-                label: gettext("Predefinições"),
+                label: gettext("Presets"),
                 submenu: vec![
                     preset("0%".into(), 0),
                     preset("25%".into(), 25),
@@ -79,7 +79,7 @@ impl Tray for AppTray {
             .into(),
             MenuItem::Separator,
             StandardItem {
-                label: gettext("Detectar monitores"),
+                label: gettext("Detect monitors"),
                 activate: Box::new(|tray: &mut Self| {
                     let _ = tray.sender.try_send(TrayEvent::Detect);
                 }),
@@ -88,7 +88,7 @@ impl Tray for AppTray {
             .into(),
             MenuItem::Separator,
             StandardItem {
-                label: gettext("Sair"),
+                label: gettext("Quit"),
                 activate: Box::new(|tray: &mut Self| {
                     let _ = tray.sender.try_send(TrayEvent::Quit);
                 }),
@@ -109,7 +109,7 @@ pub fn spawn(sender: async_channel::Sender<TrayEvent>) {
         runtime.block_on(async move {
             let tray = AppTray { sender };
             if let Err(err) = tray.spawn().await {
-                eprintln!("failed to start tray icon: {err}");
+                eprintln!("{}", gettext("Failed to start tray icon: {error}").replace("{error}", &err.to_string()));
             }
             std::future::pending::<()>().await;
         });

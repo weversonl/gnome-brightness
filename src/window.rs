@@ -23,7 +23,7 @@ pub fn build_window(app: &adw::Application, config: Rc<RefCell<Config>>) -> adw:
 
     let window = adw::ApplicationWindow::builder()
         .application(app)
-        .title(gettext("Brilho dos Monitores"))
+        .title(gettext("Monitor Brightness"))
         .default_width(config.borrow().window_width)
         .default_height(config.borrow().window_height)
         .build();
@@ -32,11 +32,11 @@ pub fn build_window(app: &adw::Application, config: Rc<RefCell<Config>>) -> adw:
     let header = adw::HeaderBar::new();
 
     let refresh_button = gtk::Button::from_icon_name("view-refresh-symbolic");
-    refresh_button.set_tooltip_text(Some(&gettext("Detectar monitores")));
+    refresh_button.set_tooltip_text(Some(&gettext("Detect monitors")));
     header.pack_start(&refresh_button);
 
     let theme_button = gtk::Button::from_icon_name(theme_icon_name(&config.borrow()));
-    theme_button.set_tooltip_text(Some(&gettext("Alternar tema")));
+    theme_button.set_tooltip_text(Some(&gettext("Toggle theme")));
     header.pack_end(&theme_button);
 
     toolbar_view.add_top_bar(&header);
@@ -241,7 +241,7 @@ fn build_overall_row() -> OverallRow {
     let container = gtk::Box::new(Orientation::Vertical, 10);
 
     let header_row = gtk::Box::new(Orientation::Horizontal, 8);
-    let label = gtk::Label::new(Some(&gettext("Brilho geral")));
+    let label = gtk::Label::new(Some(&gettext("Overall brightness")));
     label.set_halign(gtk::Align::Start);
     label.add_css_class("heading");
     let value_label = gtk::Label::new(Some(&gettext("Individual")));
@@ -340,7 +340,7 @@ fn build_monitor_column(
     scale.set_value(monitor.percent() as f64);
     if !monitor.supports_brightness {
         scale.set_tooltip_text(Some(&gettext(
-            "Este monitor não responde a comandos DDC/CI",
+            "This monitor does not respond to DDC/CI commands",
         )));
     }
 

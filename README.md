@@ -80,7 +80,7 @@ Without installing, you can also run it directly from the build:
 cargo run --release
 ```
 
-(translations won't be found in this mode since they're only installed by `install.sh`; the UI falls back to the source-language strings, which are Portuguese)
+(`build.rs` compiles `po/*.po` into `po/locale/` on every build, so translations work in this mode too — no need to run `install.sh` first)
 
 ## Configuration
 

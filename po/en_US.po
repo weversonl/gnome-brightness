@@ -1,31 +1,37 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: monitor-controller\n"
+"Project-Id-Version: gnome-brightness\n"
 "Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "Brilho dos Monitores"
+msgid "Monitor Brightness"
 msgstr "Monitor Brightness"
 
-msgid "Detectar monitores"
+msgid "Detect monitors"
 msgstr "Detect monitors"
 
-msgid "Alternar tema"
+msgid "Toggle theme"
 msgstr "Toggle theme"
 
-msgid "Brilho geral"
+msgid "Overall brightness"
 msgstr "Overall brightness"
 
-msgid "Este monitor não responde a comandos DDC/CI"
+msgid "Individual"
+msgstr "Individual"
+
+msgid "This monitor does not respond to DDC/CI commands"
 msgstr "This monitor does not respond to DDC/CI commands"
 
-msgid "Mostrar/Ocultar"
+msgid "Show/Hide"
 msgstr "Show/Hide"
 
-msgid "Predefinições"
+msgid "Presets"
 msgstr "Presets"
 
-msgid "Sair"
+msgid "Quit"
 msgstr "Quit"
+
+msgid "Failed to start tray icon: {error}"
+msgstr "Failed to start tray icon: {error}"
