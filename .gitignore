@@ -1,0 +1,16 @@
+# Build artifacts
+/target
+
+# Compiled translations (generated at install time, not source)
+*.mo
+
+# Claude Code project state / worktrees (not part of the app)
+.claude/
+
+# Internal technical docs (not for the public repo)
+docs/
+
+# Editor / OS cruft
+*.swp
+*~
+.DS_Store

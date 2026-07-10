@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Brilho dos Monitores
+GenericName=Controle de Brilho
+Comment=Controla o brilho dos monitores via DDC/CI
+Exec=gnome-brightness
+Icon=com.verso.GnomeBrightness
+Terminal=false
+Categories=GTK;Utility;Settings;
+StartupNotify=true
+X-GNOME-UsesNotifications=false

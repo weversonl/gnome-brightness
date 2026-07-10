@@ -1,0 +1,31 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: monitor-controller\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Brilho dos Monitores"
+msgstr "Monitor Brightness"
+
+msgid "Detectar monitores"
+msgstr "Detect monitors"
+
+msgid "Alternar tema"
+msgstr "Toggle theme"
+
+msgid "Brilho geral"
+msgstr "Overall brightness"
+
+msgid "Este monitor não responde a comandos DDC/CI"
+msgstr "This monitor does not respond to DDC/CI commands"
+
+msgid "Mostrar/Ocultar"
+msgstr "Show/Hide"
+
+msgid "Predefinições"
+msgstr "Presets"
+
+msgid "Sair"
+msgstr "Quit"
