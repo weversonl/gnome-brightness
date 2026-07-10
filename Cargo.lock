@@ -515,6 +515,7 @@ dependencies = [
  "gtk4",
  "ksni",
  "libadwaita",
+ "libc",
  "serde",
  "tokio",
  "toml 0.8.23",

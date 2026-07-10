@@ -10,10 +10,40 @@ use std::rc::Rc;
 
 use gettextrs::{bind_textdomain_codeset, bindtextdomain, setlocale, textdomain, LocaleCategory};
 use gtk::{gio, glib};
+use gtk::prelude::ApplicationExtManual;
 use libadwaita as adw;
 use adw::prelude::*;
 
-const APP_ID: &str = "com.verso.GnomeBrightness";
+const APP_ID: &str = "io.github.weversonl.GnomeBrightness";
+
+fn wants_verbose() -> bool {
+    std::env::args()
+        .skip(1)
+        .any(|arg| arg == "-v" || arg == "--verbose")
+}
+
+/// Forks to background and detaches from the controlling terminal so the
+/// shell that launched the app is freed immediately, mirroring how apps
+/// started from the GNOME launcher behave. Skipped when --verbose is passed.
+fn daemonize() {
+    use std::os::unix::io::AsRawFd;
+
+    unsafe {
+        match libc::fork() {
+            pid if pid < 0 => eprintln!("gnome-brightness: fork failed, staying in foreground"),
+            0 => {
+                libc::setsid();
+                if let Ok(dev_null) = std::fs::OpenOptions::new().read(true).write(true).open("/dev/null") {
+                    let fd = dev_null.as_raw_fd();
+                    libc::dup2(fd, 0);
+                    libc::dup2(fd, 1);
+                    libc::dup2(fd, 2);
+                }
+            }
+            _ => std::process::exit(0),
+        }
+    }
+}
 
 fn init_i18n() {
     setlocale(LocaleCategory::LcAll, "");
@@ -35,14 +65,25 @@ fn init_i18n() {
 }
 
 fn main() -> glib::ExitCode {
+    if !wants_verbose() {
+        daemonize();
+    }
+
     init_i18n();
 
     let app = adw::Application::builder().application_id(APP_ID).build();
 
     let config = Rc::new(RefCell::new(config::Config::load()));
+    let window_slot: Rc<RefCell<Option<Rc<adw::ApplicationWindow>>>> = Rc::new(RefCell::new(None));
 
     app.connect_activate(move |app| {
+        if let Some(window) = window_slot.borrow().as_ref() {
+            window.present();
+            return;
+        }
+
         let window = Rc::new(window::build_window(app, config.clone()));
+        *window_slot.borrow_mut() = Some(window.clone());
 
         if !config.borrow().start_minimized {
             window.present();
@@ -91,5 +132,8 @@ fn main() -> glib::ExitCode {
     app.set_flags(gio::ApplicationFlags::empty());
     let _hold_guard = app.hold();
 
-    app.run()
+    let gtk_args: Vec<String> = std::env::args()
+        .filter(|arg| arg != "-v" && arg != "--verbose")
+        .collect();
+    app.run_with_args(&gtk_args)
 }

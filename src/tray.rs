@@ -36,7 +36,7 @@ impl Tray for AppTray {
     }
 
     fn id(&self) -> String {
-        "com.verso.GnomeBrightness".into()
+        "io.github.weversonl.GnomeBrightness".into()
     }
 
     fn activate(&mut self, _x: i32, _y: i32) {

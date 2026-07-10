@@ -56,7 +56,7 @@ sudo pacman -S gtk4 libadwaita
 This builds a release binary and installs it locally, without touching the system:
 
 - Binary → `~/.local/bin/gnome-brightness`
-- Desktop entry → `~/.local/share/applications/com.verso.GnomeBrightness.desktop` (shows up in the GNOME app launcher)
+- Desktop entry → `~/.local/share/applications/io.github.weversonl.GnomeBrightness.desktop` (shows up in the GNOME app launcher)
 - Icon → `~/.local/share/icons/hicolor/scalable/apps/`
 - Translations → `~/.local/share/locale/{pt_BR,en_US}/LC_MESSAGES/gnome-brightness.mo`
 

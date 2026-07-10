@@ -38,10 +38,11 @@ echo "$MSG_BIN"
 install -m 755 target/release/gnome-brightness "$BIN_DIR/gnome-brightness"
 
 echo "$MSG_ICON"
-install -m 644 data/icons/com.verso.GnomeBrightness.svg "$ICON_DIR/com.verso.GnomeBrightness.svg"
+install -m 644 data/icons/io.github.weversonl.GnomeBrightness.svg "$ICON_DIR/io.github.weversonl.GnomeBrightness.svg"
 
 echo "$MSG_DESKTOP"
-install -m 644 data/com.verso.GnomeBrightness.desktop.in "$APPS_DIR/com.verso.GnomeBrightness.desktop"
+sed "s|@BINDIR@|$BIN_DIR|g" data/io.github.weversonl.GnomeBrightness.desktop.in > "$APPS_DIR/io.github.weversonl.GnomeBrightness.desktop"
+chmod 644 "$APPS_DIR/io.github.weversonl.GnomeBrightness.desktop"
 
 echo "$MSG_I18N"
 for po in po/*.po; do
@@ -59,7 +60,8 @@ echo "$MSG_DONE"
 read -rp "$MSG_AUTOSTART_PROMPT" answer
 if [[ "$answer" =~ ^[sSyY]$ ]]; then
     mkdir -p "$HOME/.config/autostart"
-    install -m 644 data/com.verso.GnomeBrightness.desktop.in \
-        "$HOME/.config/autostart/com.verso.GnomeBrightness.desktop"
+    sed "s|@BINDIR@|$BIN_DIR|g" data/io.github.weversonl.GnomeBrightness.desktop.in \
+        > "$HOME/.config/autostart/io.github.weversonl.GnomeBrightness.desktop"
+    chmod 644 "$HOME/.config/autostart/io.github.weversonl.GnomeBrightness.desktop"
     echo "$MSG_AUTOSTART_DONE"
 fi
