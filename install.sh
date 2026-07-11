@@ -11,8 +11,6 @@ if [[ "$locale_tag" == pt_BR* ]]; then
     MSG_DESKTOP="==> Instalando .desktop"
     MSG_I18N="==> Compilando traduções"
     MSG_DONE="==> Concluído. O app aparece no menu do GNOME como 'GnomeBrightness'."
-    MSG_AUTOSTART_PROMPT="Iniciar automaticamente com a sessão? [s/N] "
-    MSG_AUTOSTART_DONE="==> Autostart configurado."
 else
     MSG_BUILD="==> Building (release)"
     MSG_BIN="==> Installing binary"
@@ -20,8 +18,6 @@ else
     MSG_DESKTOP="==> Installing .desktop entry"
     MSG_I18N="==> Compiling translations"
     MSG_DONE="==> Done. The app shows up in the GNOME menu as 'GnomeBrightness'."
-    MSG_AUTOSTART_PROMPT="Start automatically on login? [y/N] "
-    MSG_AUTOSTART_DONE="==> Autostart configured."
 fi
 
 echo "$MSG_BUILD"
@@ -56,12 +52,3 @@ update-desktop-database "$APPS_DIR" >/dev/null 2>&1 || true
 gtk-update-icon-cache "$HOME/.local/share/icons/hicolor" >/dev/null 2>&1 || true
 
 echo "$MSG_DONE"
-
-read -rp "$MSG_AUTOSTART_PROMPT" answer
-if [[ "$answer" =~ ^[sSyY]$ ]]; then
-    mkdir -p "$HOME/.config/autostart"
-    sed "s|@BINDIR@|$BIN_DIR|g" data/io.github.weversonl.GnomeBrightness.desktop.in \
-        > "$HOME/.config/autostart/io.github.weversonl.GnomeBrightness.desktop"
-    chmod 644 "$HOME/.config/autostart/io.github.weversonl.GnomeBrightness.desktop"
-    echo "$MSG_AUTOSTART_DONE"
-fi

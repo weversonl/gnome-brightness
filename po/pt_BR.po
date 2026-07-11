@@ -12,9 +12,6 @@ msgstr "Brilho dos Monitores"
 msgid "Detect monitors"
 msgstr "Detectar monitores"
 
-msgid "Toggle theme"
-msgstr "Alternar tema"
-
 msgid "Overall brightness"
 msgstr "Brilho geral"
 
@@ -35,3 +32,45 @@ msgstr "Sair"
 
 msgid "Failed to start tray icon: {error}"
 msgstr "Falha ao iniciar o ícone da bandeja: {error}"
+
+msgid "Preferences"
+msgstr "Preferências"
+
+msgid "Appearance"
+msgstr "Aparência"
+
+msgid "Theme"
+msgstr "Tema"
+
+msgid "System"
+msgstr "Sistema"
+
+msgid "Light"
+msgstr "Claro"
+
+msgid "Dark"
+msgstr "Escuro"
+
+msgid "Startup"
+msgstr "Inicialização"
+
+msgid "Launch at login"
+msgstr "Iniciar automaticamente ao entrar na sessão"
+
+msgid "Start GnomeBrightness automatically when you log in"
+msgstr "Inicia o GnomeBrightness automaticamente quando você entra na sessão"
+
+msgid "Start minimized in tray"
+msgstr "Iniciar minimizado na bandeja"
+
+msgid "Don't show the main window on startup"
+msgstr "Não mostrar a janela principal ao iniciar"
+
+msgid "Monitors"
+msgstr "Monitores"
+
+msgid "Custom names are only shown in this app; they don't affect the monitor itself"
+msgstr "Nomes personalizados são exibidos apenas neste app; eles não afetam o monitor em si"
+
+msgid "Custom name"
+msgstr "Nome personalizado"

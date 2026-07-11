@@ -4,13 +4,21 @@ A native GTK4 / libadwaita app to control the brightness of external monitors ov
 
 Drag one slider per monitor, or use the "Overall brightness" slider to move every monitor together. Monitors are detected dynamically (no hardcoded list), and displays that don't support DDC/CI brightness control are shown disabled instead of being hidden. A system tray icon with quick presets lets you adjust brightness without opening the window.
 
+## Screenshot
+
+![GnomeBrightness main window](assets/home-page.png)
+
 ## Features
 
 - Per-monitor and overall brightness sliders, following the GNOME/Adwaita visual language
 - Dynamic monitor detection via `ddcutil` — plug in a new monitor and hit refresh
 - Monitors without DDC/CI support are shown (disabled) rather than silently dropped
-- Tray icon (StatusNotifierItem) with a "Presets" submenu (0/25/50/75/100%), show/hide, detect, and quit
-- Light/dark theme toggle, on top of following the system theme by default
+- Tray icon (StatusNotifierItem) with a "Presets" submenu (0/25/50/75/100%), show/hide, detect, quit, and a "Preferences" shortcut
+- Preferences window (gear icon in the header bar):
+  - Theme: System / Light / Dark
+  - Launch at login (writes/removes the autostart entry for you, no reinstall needed)
+  - Start minimized in tray
+  - Custom per-monitor display names — purely cosmetic, only shown inside the app, keyed by EDID so they survive replugging/renumbering
 - Window size persisted across restarts
 - Localized: Brazilian Portuguese and English (US)
 
@@ -60,7 +68,7 @@ This builds a release binary and installs it locally, without touching the syste
 - Icon → `~/.local/share/icons/hicolor/scalable/apps/`
 - Translations → `~/.local/share/locale/{pt_BR,en_US}/LC_MESSAGES/gnome-brightness.mo`
 
-The script will also ask whether to start the app automatically on login (adds a copy of the desktop entry to `~/.config/autostart/`).
+Autostart is not set up by the installer — enable it from within the app instead (Preferences → "Launch at login").
 
 Make sure `~/.local/bin` is on your `PATH`.
 
@@ -84,26 +92,31 @@ cargo run --release
 
 ## Configuration
 
-Settings are stored in `~/.config/gnome-brightness/config.toml`: theme override, monitor nicknames (keyed by EDID, so they survive replugging even if `ddcutil`'s display numbering shifts), and window size.
+Everything is editable from the in-app Preferences window (gear icon in the header bar): theme, launch-at-login, start-minimized, and per-monitor custom names.
+
+Under the hood, settings are stored in `~/.config/gnome-brightness/config.toml`: theme override, monitor nicknames (keyed by EDID, so they survive replugging even if `ddcutil`'s display numbering shifts), start-minimized flag, and window size. Autostart itself isn't tracked in this file — its source of truth is whether `~/.config/autostart/io.github.weversonl.GnomeBrightness.desktop` exists, which the Preferences switch manages for you.
 
 ## Project structure
 
 ```
 src/
-├── main.rs      # App bootstrap, i18n init, tray event wiring
-├── window.rs    # AdwApplicationWindow, sliders, overall/individual sync logic
-├── tray.rs      # StatusNotifierItem tray (ksni)
-├── ddc.rs       # ddcutil subprocess integration (detect/get/set brightness)
-├── monitor.rs   # Monitor model
-└── config.rs    # TOML-backed settings persistence
-data/            # .desktop entry template and app icon
-po/              # gettext translation files (pt_BR, en_US)
-docs/            # technical documentation (architecture, where to change what)
-install.sh       # Local (non-packaged) build + install script
+├── main.rs         # App bootstrap, i18n init, tray event wiring
+├── window.rs       # AdwApplicationWindow, sliders, overall/individual sync logic
+├── preferences.rs  # Preferences window (theme, autostart, start-minimized, monitor names)
+├── autostart.rs    # Reads/writes the ~/.config/autostart/ desktop entry
+├── tray.rs         # StatusNotifierItem tray (ksni)
+├── ddc.rs          # ddcutil subprocess integration (detect/get/set brightness)
+├── monitor.rs      # Monitor model
+└── config.rs       # TOML-backed settings persistence
+assets/             # Screenshots used in this README
+data/               # .desktop entry template and app icon
+po/                 # gettext translation files (pt_BR, en_US)
+docs/               # technical documentation (architecture, where to change what)
+install.sh          # Local (non-packaged) build + install script
 ```
 
 See `docs/OVERVIEW.md` for a quick map of the codebase, or `docs/ARCHITECTURE.md` for the full technical write-up.
 
 ## Localization
 
-UI strings are wrapped with `gettext!()`; source strings are in Portuguese, with `po/en_US.po` providing the English translation. The language is picked up from your system locale (`LANG`/`LC_MESSAGES`) — there's no in-app language switcher.
+UI strings are wrapped with `gettext()`; source strings are in English, with `po/pt_BR.po` providing the Brazilian Portuguese translation. The language is picked up from your system locale (`LANG`/`LC_MESSAGES`) — there's no in-app language switcher.

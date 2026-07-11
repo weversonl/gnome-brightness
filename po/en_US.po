@@ -12,9 +12,6 @@ msgstr "Monitor Brightness"
 msgid "Detect monitors"
 msgstr "Detect monitors"
 
-msgid "Toggle theme"
-msgstr "Toggle theme"
-
 msgid "Overall brightness"
 msgstr "Overall brightness"
 
@@ -35,3 +32,45 @@ msgstr "Quit"
 
 msgid "Failed to start tray icon: {error}"
 msgstr "Failed to start tray icon: {error}"
+
+msgid "Preferences"
+msgstr "Preferences"
+
+msgid "Appearance"
+msgstr "Appearance"
+
+msgid "Theme"
+msgstr "Theme"
+
+msgid "System"
+msgstr "System"
+
+msgid "Light"
+msgstr "Light"
+
+msgid "Dark"
+msgstr "Dark"
+
+msgid "Startup"
+msgstr "Startup"
+
+msgid "Launch at login"
+msgstr "Launch at login"
+
+msgid "Start GnomeBrightness automatically when you log in"
+msgstr "Start GnomeBrightness automatically when you log in"
+
+msgid "Start minimized in tray"
+msgstr "Start minimized in tray"
+
+msgid "Don't show the main window on startup"
+msgstr "Don't show the main window on startup"
+
+msgid "Monitors"
+msgstr "Monitors"
+
+msgid "Custom names are only shown in this app; they don't affect the monitor itself"
+msgstr "Custom names are only shown in this app; they don't affect the monitor itself"
+
+msgid "Custom name"
+msgstr "Custom name"

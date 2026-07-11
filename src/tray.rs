@@ -8,6 +8,7 @@ pub enum TrayEvent {
     ToggleWindow,
     Detect,
     Preset(u8),
+    Preferences,
     Quit,
 }
 
@@ -82,6 +83,15 @@ impl Tray for AppTray {
                 label: gettext("Detect monitors"),
                 activate: Box::new(|tray: &mut Self| {
                     let _ = tray.sender.try_send(TrayEvent::Detect);
+                }),
+                ..Default::default()
+            }
+            .into(),
+            MenuItem::Separator,
+            StandardItem {
+                label: gettext("Preferences"),
+                activate: Box::new(|tray: &mut Self| {
+                    let _ = tray.sender.try_send(TrayEvent::Preferences);
                 }),
                 ..Default::default()
             }

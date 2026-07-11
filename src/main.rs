@@ -1,6 +1,8 @@
+mod autostart;
 mod config;
 mod ddc;
 mod monitor;
+mod preferences;
 mod tray;
 mod window;
 
@@ -82,7 +84,8 @@ fn main() -> glib::ExitCode {
             return;
         }
 
-        let window = Rc::new(window::build_window(app, config.clone()));
+        let (window, refresh) = window::build_window(app, config.clone());
+        let window = Rc::new(window);
         *window_slot.borrow_mut() = Some(window.clone());
 
         if !config.borrow().start_minimized {
@@ -100,6 +103,8 @@ fn main() -> glib::ExitCode {
 
         let window_for_tray = window.clone();
         let app_for_tray = app.clone();
+        let config_for_tray = config.clone();
+        let refresh_for_tray = refresh.clone();
         glib::spawn_future_local(async move {
             while let Ok(event) = receiver.recv().await {
                 match event {
@@ -112,6 +117,14 @@ fn main() -> glib::ExitCode {
                     }
                     tray::TrayEvent::Detect => {
                         window_for_tray.present();
+                    }
+                    tray::TrayEvent::Preferences => {
+                        window_for_tray.present();
+                        preferences::present(
+                            &window_for_tray,
+                            config_for_tray.clone(),
+                            refresh_for_tray.clone(),
+                        );
                     }
                     tray::TrayEvent::Preset(level) => {
                         let ids: Vec<u32> = ddc::detect_monitors()

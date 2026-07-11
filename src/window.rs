@@ -18,7 +18,10 @@ const DEBOUNCE_MS: u32 = 100;
 type Debouncers = Rc<RefCell<HashMap<u32, glib::SourceId>>>;
 type IndividualWidgets = Rc<RefCell<Vec<(u32, gtk::Scale, gtk::Label)>>>;
 
-pub fn build_window(app: &adw::Application, config: Rc<RefCell<Config>>) -> adw::ApplicationWindow {
+pub fn build_window(
+    app: &adw::Application,
+    config: Rc<RefCell<Config>>,
+) -> (adw::ApplicationWindow, Rc<dyn Fn()>) {
     apply_theme(&config.borrow());
 
     let window = adw::ApplicationWindow::builder()
@@ -35,9 +38,9 @@ pub fn build_window(app: &adw::Application, config: Rc<RefCell<Config>>) -> adw:
     refresh_button.set_tooltip_text(Some(&gettext("Detect monitors")));
     header.pack_start(&refresh_button);
 
-    let theme_button = gtk::Button::from_icon_name(theme_icon_name(&config.borrow()));
-    theme_button.set_tooltip_text(Some(&gettext("Toggle theme")));
-    header.pack_end(&theme_button);
+    let preferences_button = gtk::Button::from_icon_name("preferences-system-symbolic");
+    preferences_button.set_tooltip_text(Some(&gettext("Preferences")));
+    header.pack_end(&preferences_button);
 
     toolbar_view.add_top_bar(&header);
 
@@ -154,26 +157,23 @@ pub fn build_window(app: &adw::Application, config: Rc<RefCell<Config>>) -> adw:
 
     refresh();
 
+    let refresh: Rc<dyn Fn()> = Rc::new(refresh);
+
     refresh_button.connect_clicked({
         let refresh = refresh.clone();
         move |_| refresh()
     });
 
-    theme_button.connect_clicked({
+    preferences_button.connect_clicked({
         let config = config.clone();
-        let theme_button = theme_button.clone();
+        let window = window.clone();
+        let refresh = refresh.clone();
         move |_| {
-            {
-                let mut cfg = config.borrow_mut();
-                cfg.theme = next_theme(&cfg.theme);
-                apply_theme(&cfg);
-                cfg.save();
-            }
-            theme_button.set_icon_name(theme_icon_name(&config.borrow()));
+            crate::preferences::present(&window, config.clone(), refresh.clone());
         }
     });
 
-    window
+    (window, refresh)
 }
 
 fn average_percent(monitors: &[Monitor]) -> u8 {
@@ -195,21 +195,7 @@ pub fn save_window_size(win: &adw::ApplicationWindow, config: &Rc<RefCell<Config
     cfg.save();
 }
 
-fn next_theme(current: &str) -> String {
-    match current {
-        "dark" => "light".to_string(),
-        _ => "dark".to_string(),
-    }
-}
-
-fn theme_icon_name(config: &Config) -> &'static str {
-    match config.theme.as_str() {
-        "dark" => "weather-clear-night-symbolic",
-        _ => "weather-clear-symbolic",
-    }
-}
-
-fn apply_theme(config: &Config) {
+pub(crate) fn apply_theme(config: &Config) {
     let manager = adw::StyleManager::default();
     let scheme = match config.theme.as_str() {
         "dark" => adw::ColorScheme::ForceDark,
