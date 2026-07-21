@@ -74,3 +74,6 @@ msgstr "Nomes personalizados são exibidos apenas neste app; eles não afetam o 
 
 msgid "Custom name"
 msgstr "Nome personalizado"
+
+msgid "Input source"
+msgstr "Entrada de vídeo"

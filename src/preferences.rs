@@ -4,6 +4,7 @@ use std::rc::Rc;
 use adw::prelude::*;
 use gettextrs::gettext;
 use gtk::prelude::*;
+use gtk::glib;
 use libadwaita as adw;
 
 use crate::autostart;
@@ -145,6 +146,56 @@ pub fn present(parent: &adw::ApplicationWindow, config: Rc<RefCell<Config>>, on_
             row.add_suffix(&entry);
             row.set_activatable_widget(Some(&entry));
             monitors_group.add(&row);
+
+            // Probing input sources means talking to the monitor over DDC/CI, which can
+            // take a couple of seconds per display, so it's fetched off the main thread
+            // and the row is filled in once the result comes back.
+            let input_row = adw::ComboRow::builder()
+                .title(gettext("Input source"))
+                .subtitle(gettext("Detecting…"))
+                .sensitive(false)
+                .model(&gtk::StringList::new(&[]))
+                .build();
+            monitors_group.add(&input_row);
+
+            let display_id = monitor.display_id;
+            let (tx, rx) = async_channel::bounded(1);
+            std::thread::spawn(move || {
+                let result = ddc::get_input_sources_and_current(display_id);
+                let _ = tx.send_blocking(result);
+            });
+
+            glib::spawn_future_local({
+                let monitors_group = monitors_group.clone();
+                let input_row = input_row.clone();
+                async move {
+                    let Ok((sources, current)) = rx.recv().await else {
+                        monitors_group.remove(&input_row);
+                        return;
+                    };
+                    if sources.is_empty() {
+                        monitors_group.remove(&input_row);
+                        return;
+                    }
+
+                    let labels: Vec<&str> = sources.iter().map(|(_, name)| name.as_str()).collect();
+                    let selected = current
+                        .and_then(|current| sources.iter().position(|(value, _)| *value == current))
+                        .unwrap_or(0) as u32;
+
+                    input_row.set_model(Some(&gtk::StringList::new(&labels)));
+                    input_row.set_selected(selected);
+                    input_row.set_subtitle("");
+                    input_row.set_sensitive(true);
+
+                    let values: Vec<u8> = sources.iter().map(|(value, _)| *value).collect();
+                    input_row.connect_selected_notify(move |row| {
+                        if let Some(&value) = values.get(row.selected() as usize) {
+                            ddc::set_input_source(display_id, value);
+                        }
+                    });
+                }
+            });
         }
 
         page.add(&monitors_group);

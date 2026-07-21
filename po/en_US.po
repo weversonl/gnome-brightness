@@ -74,3 +74,6 @@ msgstr "Custom names are only shown in this app; they don't affect the monitor i
 
 msgid "Custom name"
 msgstr "Custom name"
+
+msgid "Input source"
+msgstr "Input source"
