@@ -18,7 +18,7 @@ struct AppTray {
 
 impl Tray for AppTray {
     fn icon_name(&self) -> String {
-        "display-brightness-symbolic".into()
+        "preferences-desktop-screensaver-symbolic".into()
     }
 
     fn icon_pixmap(&self) -> Vec<Icon> {
